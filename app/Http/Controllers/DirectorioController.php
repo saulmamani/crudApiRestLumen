@@ -26,4 +26,22 @@ class DirectorioController extends Controller
     {
         return Directorio::findOrFail($id);
     }
+
+    //POST directorios
+    public function store(Request $request)
+    {
+        //validar datos
+        $this->validate($request, [
+           'nombre_completo' => 'required|min:3|max:100',
+           'telefono' => 'required|unique:directorios,telefono'
+        ]);
+
+        $input = $request->all();
+        Directorio::create($input);
+
+        return response()->json([
+            'res' => true,
+            'message' => 'Registro insertado correctamente'
+        ]);
+    }
 }

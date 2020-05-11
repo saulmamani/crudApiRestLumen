@@ -18,3 +18,4 @@ $router->get('/', function () use ($router) {
 
 $router->get('directorios', ['as' => 'directorios', 'uses' => 'DirectorioController@index']);
 $router->get('directorios/{id}', ['as' => 'directorios.show', 'uses' => 'DirectorioController@show']);
+$router->post('directorios', ['as' => 'directorios.store', 'uses' => 'DirectorioController@store']);
