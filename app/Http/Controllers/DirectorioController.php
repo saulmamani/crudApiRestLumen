@@ -44,4 +44,33 @@ class DirectorioController extends Controller
             'message' => 'Registro insertado correctamente'
         ]);
     }
+
+    //PUT directorios/id
+    public function update($id, Request $request)
+    {
+        //validar datos
+        $this->validate($request, [
+            'nombre_completo' => 'required|min:3|max:100',
+            'telefono' => 'required|unique:directorios,telefono,' . $id
+        ]);
+
+        $input = $request->all();
+        $directorio = Directorio::find($id);
+        $directorio->update($input);
+
+        return response()->json([
+            'res' => true,
+            'message' => 'Registro modificado correctamente'
+        ]);
+    }
+
+    //DELETE directorios/id
+    public function delete($id)
+    {
+        Directorio::destroy($id);
+        return response()->json([
+            'res' => true,
+            'message' => 'Registro eliminado correctamente'
+        ]);
+    }
 }
