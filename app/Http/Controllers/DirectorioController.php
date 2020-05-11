@@ -31,10 +31,7 @@ class DirectorioController extends Controller
     public function store(Request $request)
     {
         //validar datos
-        $this->validate($request, [
-           'nombre_completo' => 'required|min:3|max:100',
-           'telefono' => 'required|unique:directorios,telefono'
-        ]);
+       $this->validar($request);
 
         $input = $request->all();
         Directorio::create($input);
@@ -49,10 +46,7 @@ class DirectorioController extends Controller
     public function update($id, Request $request)
     {
         //validar datos
-        $this->validate($request, [
-            'nombre_completo' => 'required|min:3|max:100',
-            'telefono' => 'required|unique:directorios,telefono,' . $id
-        ]);
+        $this->validar($request, $id);
 
         $input = $request->all();
         $directorio = Directorio::find($id);
@@ -71,6 +65,16 @@ class DirectorioController extends Controller
         return response()->json([
             'res' => true,
             'message' => 'Registro eliminado correctamente'
+        ]);
+    }
+
+    private function validar($request, $id = null)
+    {
+        $ruleUpdate = is_null($id) ? '' : ',' . $id;
+
+        $this->validate($request, [
+            'nombre_completo' => 'required|min:3|max:100',
+            'telefono' => 'required|unique:directorios,telefono' . $ruleUpdate
         ]);
     }
 }
