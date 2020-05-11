@@ -1,0 +1,29 @@
+<?php
+
+
+namespace App\Http\Controllers;
+
+
+use App\Directorio;
+use Illuminate\Http\Request;
+
+class DirectorioController extends Controller
+{
+    //GET directorios
+    public function index(Request $request)
+    {
+        if($request->has('txtBuscar'))
+        {
+            return Directorio::whereTelefono($request->txtBuscar)
+                            ->orWhere('nombre_completo', 'like', '%' . $request->txtBuscar . '%')->get();
+        }
+        else
+            return Directorio::all();
+    }
+
+    //GET directorios/id
+    public function show($id)
+    {
+        return Directorio::findOrFail($id);
+    }
+}
