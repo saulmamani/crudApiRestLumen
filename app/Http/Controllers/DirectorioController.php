@@ -12,12 +12,10 @@ class DirectorioController extends Controller
     //GET directorios
     public function index(Request $request)
     {
-        if($request->has('txtBuscar'))
-        {
+        if ($request->has('txtBuscar')) {
             return Directorio::whereTelefono($request->txtBuscar)
-                            ->orWhere('nombre_completo', 'like', '%' . $request->txtBuscar . '%')->get();
-        }
-        else
+                ->orWhere('nombre_completo', 'like', '%' . $request->txtBuscar . '%')->get();
+        } else
             return Directorio::all();
     }
 
@@ -31,9 +29,12 @@ class DirectorioController extends Controller
     public function store(Request $request)
     {
         //validar datos
-       $this->validar($request);
+        $this->validar($request);
 
         $input = $request->all();
+        if ($request->has('url_foto'))
+            $input['url_foto'] = $this->cargarFoto($request->url_foto);
+
         Directorio::create($input);
 
         return response()->json([
@@ -49,6 +50,9 @@ class DirectorioController extends Controller
         $this->validar($request, $id);
 
         $input = $request->all();
+        if ($request->has('url_foto'))
+            $input['url_foto'] = $this->cargarFoto($request->url_foto);
+
         $directorio = Directorio::find($id);
         $directorio->update($input);
 
@@ -76,5 +80,12 @@ class DirectorioController extends Controller
             'nombre_completo' => 'required|min:3|max:100',
             'telefono' => 'required|unique:directorios,telefono' . $ruleUpdate
         ]);
+    }
+
+    private function cargarFoto($file)
+    {
+        $nombreArchivo = time() . "." . $file->getClientOriginalExtension();
+        $file->move(base_path('/public/fotografias'), $nombreArchivo);
+        return $nombreArchivo;
     }
 }
